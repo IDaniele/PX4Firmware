@@ -236,7 +236,7 @@ dsm_config(int fd)
 {
 #ifdef GPIO_SPEKTRUM_PWR_EN
 	// enable power on DSM connector
-	POWER_SPEKTRUM(true);
+	//POWER_SPEKTRUM(true); //////////DW1000 LBEE
 #endif
 
 	int ret = -1;
@@ -313,13 +313,13 @@ dsm_bind(uint16_t cmd, int pulses)
 	case DSM_CMD_BIND_POWER_DOWN:
 
 		/*power down DSM satellite*/
-		POWER_SPEKTRUM(0);
+		//POWER_SPEKTRUM(0); //////////DW1000 LBEE
 		break;
 
 	case DSM_CMD_BIND_POWER_UP:
 
 		/*power up DSM satellite*/
-		POWER_SPEKTRUM(1);
+		//POWER_SPEKTRUM(1); //////////DW1000 LBEE
 		dsm_guess_format(true);
 		break;
 
@@ -344,7 +344,7 @@ dsm_bind(uint16_t cmd, int pulses)
 	case DSM_CMD_BIND_REINIT_UART:
 
 		/*Restore USART RX pin to RS232 receive mode*/
-		SPEKTRUM_RX_AS_UART();
+		//SPEKTRUM_RX_AS_UART(); //////////DW1000 LBEE
 		break;
 
 	}
