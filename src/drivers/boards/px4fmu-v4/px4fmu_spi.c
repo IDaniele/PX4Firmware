@@ -86,13 +86,31 @@ __EXPORT void stm32_spiinitialize(void)
 
 	stm32_configgpio(GPIO_DRDY_MPU9250);
 	stm32_configgpio(GPIO_DRDY_HMC5983);
-	stm32_configgpio(GPIO_DRDY_ICM_20608_G);
+	//stm32_configgpio(GPIO_DRDY_ICM_20608_G);//DW1000 (LBEE)
 #endif
 
 #ifdef CONFIG_STM32_SPI2
 	stm32_configgpio(GPIO_SPI_CS_FRAM);
 	stm32_gpiowrite(GPIO_SPI_CS_FRAM, 1);
 #endif
+
+/////////////////////DW1000
+//*
+#ifndef CONFIG_STM32_SPI4
+#define CONFIG_STM32_SPI4 1
+#endif
+#ifdef CONFIG_STM32_SPI4
+    stm32_configgpio(GPIO_SPI_CS_EXT0);
+    stm32_configgpio(GPIO_SPI_CS_EXT1);
+    stm32_configgpio(GPIO_SPI_CS_EXT2);
+    stm32_configgpio(GPIO_SPI_CS_EXT3);
+    stm32_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+    stm32_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+    stm32_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+    stm32_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+#endif
+//*/
+/////////////////////
 
 }
 
@@ -176,4 +194,49 @@ __EXPORT uint8_t stm32_spi2status(FAR struct spi_dev_s *dev, enum spi_dev_e devi
 	/* FRAM is always present */
 	return SPI_STATUS_PRESENT;
 }
+
+/////////////////////DW1000
+__EXPORT uint8_t stm32_spi4status(FAR struct spi_dev_s *dev, enum spi_dev_e devid)
+{
+    return SPI_STATUS_PRESENT;
+}
+
+__EXPORT void stm32_spi4select(FAR struct spi_dev_s *dev, enum spi_dev_e devid, bool selected)
+{
+    switch (devid) {
+    case PX4_SPIDEV_EXT0:
+        stm32_gpiowrite(GPIO_SPI_CS_EXT0, !selected);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+        break;
+
+    case PX4_SPIDEV_EXT1:
+        stm32_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT1, !selected);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+        break;
+        
+    case PX4_SPIDEV_EXT2:
+        stm32_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT2, !selected);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT3, 1);
+        break;
+
+    case PX4_SPIDEV_EXT3:
+        stm32_gpiowrite(GPIO_SPI_CS_EXT0, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT1, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT2, 1);
+        stm32_gpiowrite(GPIO_SPI_CS_EXT3, !selected);
+        break;
+    
+    default:
+        break;
+
+    }
+}
+/////////////////////
+
 #endif
