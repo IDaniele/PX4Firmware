@@ -208,6 +208,7 @@ stm32_boardinitialize(void)
 static struct spi_dev_s *spi1;
 static struct spi_dev_s *spi2;
 static struct sdio_dev_s *sdio;
+static struct spi_dev_s *spi4;  //DW1000
 
 #include <math.h>
 
@@ -226,7 +227,7 @@ __EXPORT int nsh_archinitialize(void)
 
 	stm32_configgpio(GPIO_SBUS_INV);
 	stm32_configgpio(GPIO_8266_GPIO0);
-	stm32_configgpio(GPIO_SPEKTRUM_PWR_EN);
+	//stm32_configgpio(GPIO_SPEKTRUM_PWR_EN);//DW1000
 	stm32_configgpio(GPIO_8266_PD);
 	stm32_configgpio(GPIO_8266_RST);
 	stm32_configgpio(GPIO_BTN_SAFETY);
@@ -317,6 +318,20 @@ __EXPORT int nsh_archinitialize(void)
 	SPI_SETMODE(spi2, SPIDEV_MODE3);
 	SPI_SELECT(spi2, SPIDEV_FLASH, false);
 	SPI_SELECT(spi2, PX4_SPIDEV_BARO, false);
+	
+	/////////////////////DW1000
+	spi4 = up_spiinitialize(4);
+        //*
+	SPI_SETFREQUENCY(spi4, 10000000);
+	SPI_SETBITS(spi4, 8);
+	SPI_SETMODE(spi4, SPIDEV_MODE0);
+	SPI_SELECT(spi4, PX4_SPIDEV_EXT0, false);
+	SPI_SELECT(spi4, PX4_SPIDEV_EXT1, false);
+        /*
+        SPI_SELECT(spi4, PX4_SPIDEV_EXT2, false);
+	SPI_SELECT(spi4, PX4_SPIDEV_EXT3, false);
+        //*/
+	/////////////////////
 
 #ifdef CONFIG_MMCSD
 	/* First, get an instance of the SDIO interface */
