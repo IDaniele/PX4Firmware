@@ -2508,12 +2508,12 @@ PX4FMU::sensor_reset(int ms)
 	stm32_configgpio(GPIO_SPI_CS_OFF_MPU9250);
 	stm32_configgpio(GPIO_SPI_CS_OFF_HMC5983);
 	stm32_configgpio(GPIO_SPI_CS_OFF_MS5611);
-	stm32_configgpio(GPIO_SPI_CS_OFF_ICM_20608_G);
+	//stm32_configgpio(GPIO_SPI_CS_OFF_ICM_20608_G);//////////DW1000 LBEE
 
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_MPU9250, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_HMC5983, 0);
 	stm32_gpiowrite(GPIO_SPI_CS_OFF_MS5611, 0);
-	stm32_gpiowrite(GPIO_SPI_CS_OFF_ICM_20608_G, 0);
+	//stm32_gpiowrite(GPIO_SPI_CS_OFF_ICM_20608_G, 0);//////////DW1000 LBEE
 
 	stm32_configgpio(GPIO_SPI1_SCK_OFF);
 	stm32_configgpio(GPIO_SPI1_MISO_OFF);
@@ -2525,11 +2525,11 @@ PX4FMU::sensor_reset(int ms)
 
 	stm32_configgpio(GPIO_DRDY_OFF_MPU9250);
 	stm32_configgpio(GPIO_DRDY_OFF_HMC5983);
-	stm32_configgpio(GPIO_DRDY_OFF_ICM_20608_G);
+	//stm32_configgpio(GPIO_DRDY_OFF_ICM_20608_G);//////////DW1000 LBEE
 
 	stm32_gpiowrite(GPIO_DRDY_OFF_MPU9250, 0);
 	stm32_gpiowrite(GPIO_DRDY_OFF_HMC5983, 0);
-	stm32_gpiowrite(GPIO_DRDY_OFF_ICM_20608_G, 0);
+	//stm32_gpiowrite(GPIO_DRDY_OFF_ICM_20608_G, 0);//////////DW1000 LBEE
 
 	/* set the sensor rail off */
 	stm32_configgpio(GPIO_VDD_3V3_SENSORS_EN);
@@ -2701,6 +2701,10 @@ PX4FMU::sensor_reset(int ms)
 	usleep(100);
 
 	/* reconfigure the SPI pins */
+//DW1000
+#ifndef CONFIG_STM32_SPI4
+#define CONFIG_STM32_SPI4 1
+#endif
 #ifdef CONFIG_STM32_SPI4
 	stm32_configgpio(GPIO_SPI_CS_GYRO);
 	stm32_configgpio(GPIO_SPI_CS_ACCEL_MAG);
@@ -2764,9 +2768,9 @@ PX4FMU::peripheral_reset(int ms)
 
 	stm32_gpiowrite(GPIO_PERIPH_3V3_EN, 0);
 
-	bool last = stm32_gpioread(GPIO_SPEKTRUM_PWR_EN);
+	//bool last = stm32_gpioread(GPIO_SPEKTRUM_PWR_EN);//////////DW1000 LBEE
 	/* Keep Spektum on to discharge rail*/
-	stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, 1);
+	//stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, 1);//////////DW1000 LBEE
 
 	/* wait for the peripheral rail to reach GND */
 	usleep(ms * 1000);
@@ -2775,7 +2779,7 @@ PX4FMU::peripheral_reset(int ms)
 	/* re-enable power */
 
 	/* switch the peripheral rail back on */
-	stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, last);
+	//stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, last);//////////DW1000 LBEE
 	stm32_gpiowrite(GPIO_PERIPH_3V3_EN, 1);
 #endif
 #if defined(CONFIG_ARCH_BOARD_MINDPX_V2)
